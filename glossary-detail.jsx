@@ -1,7 +1,7 @@
 // Detail column — the main TEK view. Two layouts: dashboard (tiles)
 // and notebook (printable one-pager). Both get the icon/glyph strip.
 
-const { useState: useS2, useRef: useR2 } = React;
+const { useState: useS2 } = React;
 
 function DetailColumn({ tek, layout, setLayout, onNav }) {
   if (!tek) return <div style={window.gx.detailCol}>No TEK selected</div>;
@@ -42,116 +42,9 @@ function DetailColumn({ tek, layout, setLayout, onNav }) {
       {layout === 'dashboard' ? <DashboardDetail tek={tek} /> : <NotebookDetail tek={tek} />}
 
       <ActionFooter tek={tek} />
-      {tek.explainerVideo && <FloatingVideoWidget video={tek.explainerVideo} tekCode={tek.code} />}
     </div>
   );
 }
-
-/* ───────────── FLOATING VIDEO WIDGET ───────────── */
-function FloatingVideoWidget({ video, tekCode }) {
-  const [collapsed, setCollapsed] = useS2(false);
-  const videoRef = useR2(null);
-
-  const toggle = () => {
-    if (!collapsed && videoRef.current) videoRef.current.pause();
-    setCollapsed(c => !c);
-  };
-
-  return (
-    <div style={vw.wrap}>
-      <div style={vw.header} onClick={toggle}>
-        <div style={vw.headerLeft}>
-          <iconify-icon icon="tabler:video" width="14" style={{ color: 'var(--accent, oklch(0.45 0.08 150))' }} />
-          <span style={vw.headerLabel}>{video.label || 'Teacher Explainer'}</span>
-          {video.duration && <span style={vw.headerDuration}>{video.duration}</span>}
-        </div>
-        <div style={vw.headerRight}>
-          <span style={vw.headerCode}>{tekCode}</span>
-          <iconify-icon
-            icon={collapsed ? 'tabler:chevron-up' : 'tabler:chevron-down'}
-            width="14"
-            style={{ color: '#8A7F73' }}
-          />
-        </div>
-      </div>
-      {!collapsed && (
-        <div style={vw.body}>
-          <video
-            ref={videoRef}
-            controls
-            preload="metadata"
-            style={vw.video}
-          >
-            <source src={video.src} type="video/mp4" />
-          </video>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const vw = {
-  wrap: {
-    position: 'fixed',
-    bottom: 20,
-    right: 20,
-    width: 300,
-    background: '#FFFDF7',
-    border: '1px solid rgba(26,23,19,0.14)',
-    borderRadius: 4,
-    boxShadow: '0 8px 32px rgba(26,23,19,0.18)',
-    zIndex: 900,
-    overflow: 'hidden',
-    fontFamily: '"IBM Plex Sans", sans-serif',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 12px',
-    cursor: 'pointer',
-    borderBottom: '1px solid rgba(26,23,19,0.08)',
-    background: '#F6F2EC',
-    userSelect: 'none',
-  },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 7,
-  },
-  headerLabel: {
-    fontSize: 12,
-    fontWeight: 500,
-    color: '#1A1713',
-    letterSpacing: '-0.01em',
-  },
-  headerDuration: {
-    fontFamily: '"IBM Plex Mono", monospace',
-    fontSize: 10,
-    color: '#8A7F73',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  },
-  headerCode: {
-    fontFamily: '"IBM Plex Mono", monospace',
-    fontSize: 10,
-    color: '#6B5E3C',
-    letterSpacing: '0.08em',
-  },
-  body: {
-    background: '#1A1713',
-  },
-  video: {
-    width: '100%',
-    display: 'block',
-    maxHeight: 200,
-  },
-};
 
 /* ───────────── ACTIONS — "do something with this TEK" ───────────── */
 function ActionFooter({ tek }) {
@@ -359,25 +252,50 @@ function DashboardDetail({ tek }) {
   return (
     <div style={dx.page}>
       <section style={dx.headerTile}>
-        <div style={dx.headerRow}>
-          <span style={dx.codeChip}>{tek.code}</span>
-          <span style={dx.metaDot}>·</span>
-          <span>{tek.course}</span>
-          <span style={dx.metaDot}>·</span>
-          <span>{tek.strand}</span>
-          <span style={dx.metaDot}>·</span>
-          <span>{tek.substrand}</span>
-        </div>
-        <h1 style={dx.h1}>{tek.title}</h1>
-        <p style={dx.expectation}>{tek.expectation}</p>
+        <div style={tek.explainerVideo ? dx.headerSplit : null}>
+          <div style={tek.explainerVideo ? dx.headerMain : null}>
+            <div style={dx.headerRow}>
+              <span style={dx.codeChip}>{tek.code}</span>
+              <span style={dx.metaDot}>·</span>
+              <span>{tek.course}</span>
+              <span style={dx.metaDot}>·</span>
+              <span>{tek.strand}</span>
+              <span style={dx.metaDot}>·</span>
+              <span>{tek.substrand}</span>
+            </div>
+            <h1 style={dx.h1}>{tek.title}</h1>
+            <p style={dx.expectation}>{tek.expectation}</p>
 
-        <GlyphStrip glyphs={tek.glyphs} labels={labels} />
+            <GlyphStrip glyphs={tek.glyphs} labels={labels} />
 
-        <div style={dx.pillStrip}>
-          <Pill label="DOK" value={`${tek.dok} · ${['','Recall','Skill','Strategic','Extended'][tek.dok]}`} />
-          <Pill label="Bloom" value={tek.bloom} />
-          <Pill label="Cadence" value={tek.estimatedTime} />
-          {tek.tags.map(t => <Pill key={t} value={t} muted />)}
+            <div style={dx.pillStrip}>
+              <Pill label="DOK" value={`${tek.dok} · ${['','Recall','Skill','Strategic','Extended'][tek.dok]}`} />
+              <Pill label="Bloom" value={tek.bloom} />
+              <Pill label="Cadence" value={tek.estimatedTime} />
+              {tek.tags.map(t => <Pill key={t} value={t} muted />)}
+            </div>
+          </div>
+
+          {tek.explainerVideo && (
+            <div style={dx.teachingTipsPanel}>
+              <div style={dx.teachingTipsHead}>
+                <iconify-icon icon="tabler:play-card" width="14" style={{ color: 'var(--accent, oklch(0.45 0.08 150))' }} />
+                <span style={dx.teachingTipsLabel}>Teaching Tips</span>
+                {tek.explainerVideo.duration && (
+                  <span style={dx.teachingTipsDuration}>{tek.explainerVideo.duration}</span>
+                )}
+              </div>
+              <div style={dx.teachingTipsEmbed}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${tek.explainerVideo.youtubeId}`}
+                  style={dx.teachingTipsIframe}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={tek.explainerVideo.label || 'Teaching Tips'}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -595,6 +513,37 @@ const dx = {
   headerTile: {
     background: '#FFFDF7', padding: '28px 32px',
     borderRadius: 3, border: '1px solid rgba(26,23,19,0.08)', marginBottom: 16,
+  },
+  headerSplit: {
+    display: 'flex', gap: 28, alignItems: 'flex-start',
+  },
+  headerMain: {
+    flex: 1, minWidth: 0,
+  },
+  teachingTipsPanel: {
+    width: 340, flexShrink: 0,
+    display: 'flex', flexDirection: 'column', gap: 10,
+  },
+  teachingTipsHead: {
+    display: 'flex', alignItems: 'center', gap: 8,
+  },
+  teachingTipsLabel: {
+    fontFamily: '"Source Serif 4", Georgia, serif',
+    fontSize: 16, fontWeight: 500, letterSpacing: '-0.01em',
+    flex: 1,
+  },
+  teachingTipsDuration: {
+    fontFamily: '"IBM Plex Mono", monospace', fontSize: 10,
+    color: '#8A7F73', textTransform: 'uppercase', letterSpacing: '0.1em',
+  },
+  teachingTipsEmbed: {
+    position: 'relative', width: '100%', paddingBottom: '56.25%',
+    background: '#1A1713', borderRadius: 3, overflow: 'hidden',
+  },
+  teachingTipsIframe: {
+    position: 'absolute', top: 0, left: 0,
+    width: '100%', height: '100%',
+    border: 'none', display: 'block',
   },
   headerRow: {
     display: 'flex', alignItems: 'center', gap: 10,

@@ -29,7 +29,7 @@ const TEKS = [
       overview: 'The student develops oral language through listening, discussion, speaking, and thinking, with an emphasis on following and giving complex oral instructions.',
       studentFriendly: 'You can listen carefully and understand when someone gives you detailed instructions on how to do something \u2014 like completing a task or solving a problem. You can also answer questions and work through more complicated things.',
       tags: ['Listening', 'Oral Language', 'Instruction', 'Multi-step'],
-      explainerVideo: { src: 'videos/110-36-1B.mp4', label: 'Teacher Explainer', duration: '2 min' },
+      explainerVideo: { youtubeId: 'VqG7RZ4Gnms', label: 'Teacher Explainer', duration: '2 min' },
       glyphs: ['tabler:ear', 'tabler:message-dots', 'tabler:list-numbers', 'tabler:checklist'],
       dok: 3, bloom: 'Apply / Analyze',
       verticalPrev: '110.35(1)(B) \u00b7 Grade 8', verticalNext: '110.37(1)(B) \u00b7 English II',
