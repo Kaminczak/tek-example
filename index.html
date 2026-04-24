@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kaizen.School — TEKS Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+<style>
+  :root { --accent: oklch(0.45 0.08 150); }
+  html, body { margin: 0; padding: 0; background: #F6F2EC; }
+  body { font-family: "IBM Plex Sans", system-ui, sans-serif; color: #1A1713; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+
+  iconify-icon { display: inline-flex; vertical-align: -0.125em; }
+
+  .tweaks-panel {
+    position: fixed; right: 20px; bottom: 20px; z-index: 1000;
+    background: #1A1713; color: #F6F2EC;
+    padding: 18px 20px; border-radius: 4px; width: 260px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    display: none; font-family: "IBM Plex Sans", sans-serif;
+  }
+  .tweaks-panel.visible { display: block; }
+  .tweaks-panel h3 {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin: 0 0 12px; color: #A8A095;
+  }
+  .tweak-row { margin-bottom: 12px; }
+  .tweak-row label {
+    display: block; color: #A8A095;
+    font-family: "IBM Plex Mono", monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;
+  }
+  .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .swatch { width: 28px; height: 28px; border-radius: 3px; cursor: pointer; border: 2px solid transparent; }
+  .swatch.active { border-color: #F6F2EC; }
+  .density-row { display: flex; gap: 4px; }
+  .density-row button {
+    flex: 1; padding: 6px; background: #2A241E; color: #F6F2EC;
+    border: 1px solid #3C352D; border-radius: 2px; cursor: pointer;
+    font-family: "IBM Plex Mono", monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .density-row button.active { background: var(--accent); border-color: var(--accent); }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white; }
+  }
+</style>
+<script>
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accentHue": 150,
+    "density": "comfortable",
+    "glyphsVisible": false
+  }/*EDITMODE-END*/;
+  window.__tweaks = { ...TWEAK_DEFAULTS };
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="glossary-data.jsx"></script>
+<script type="text/babel" src="glossary-styles.jsx"></script>
+<script type="text/babel" src="glossary-detail.jsx"></script>
+<script type="text/babel" src="glossary-shell.jsx"></script>
+
+<script type="text/babel">
+ReactDOM.createRoot(document.getElementById('root')).render(<Glossary />);
+
+// Tweaks
+setTimeout(() => {
+  const panel = document.createElement('div');
+  panel.className = 'tweaks-panel no-print';
+  panel.innerHTML = `
+    <h3>Tweaks</h3>
+    <div class="tweak-row">
+      <label>Accent hue</label>
+      <div class="swatch-row" id="tw-hue"></div>
+    </div>
+    <div class="tweak-row">
+      <label>Density</label>
+      <div class="density-row" id="tw-density">
+        <button data-v="compact">Compact</button>
+        <button data-v="comfortable" class="active">Default</button>
+        <button data-v="spacious">Spacious</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>Glyph strip</label>
+      <div class="density-row" id="tw-glyphs">
+        <button data-v="on" class="active">Show icons</button>
+        <button data-v="off">Hide</button>
+      </div>
+    </div>
+    <div style="opacity:0.6; font-size:11px; margin-top:14px; color:#A8A095;">
+      Icons are Tabler via Iconify — swap to Noun Project by replacing
+      <code style="background:#2A241E;padding:1px 4px;border-radius:2px;">iconify-icon</code> with <code style="background:#2A241E;padding:1px 4px;border-radius:2px;">&lt;img&gt;</code>.
+    </div>
+  `;
+  document.body.appendChild(panel);
+
+  const hues = [
+    { h: 150, name: 'Prairie green' },
+    { h: 30, name: 'Longhorn rust' },
+    { h: 260, name: 'Bluebonnet' },
+    { h: 90, name: 'Olive' },
+    { h: 0, name: 'Ink' },
+  ];
+  const hueRow = panel.querySelector('#tw-hue');
+  hues.forEach(({ h, name }) => {
+    const s = document.createElement('div');
+    s.className = 'swatch' + (h === window.__tweaks.accentHue ? ' active' : '');
+    s.style.background = `oklch(0.45 0.08 ${h})`;
+    s.title = name;
+    s.onclick = () => {
+      window.__tweaks.accentHue = h;
+      document.documentElement.style.setProperty('--accent', `oklch(0.45 0.08 ${h})`);
+      panel.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { accentHue: h } }, '*'); } catch(_) {}
+    };
+    hueRow.appendChild(s);
+  });
+
+  panel.querySelectorAll('#tw-density button').forEach(btn => {
+    btn.onclick = () => {
+      panel.querySelectorAll('#tw-density button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const v = btn.dataset.v;
+      window.__tweaks.density = v;
+      const scale = { compact: 0.92, comfortable: 1, spacious: 1.08 }[v];
+      document.documentElement.style.fontSize = `${16 * scale}px`;
+      try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { density: v } }, '*'); } catch(_) {}
+    };
+  });
+
+  panel.querySelectorAll('#tw-glyphs button').forEach(btn => {
+    btn.onclick = () => {
+      panel.querySelectorAll('#tw-glyphs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const on = btn.dataset.v === 'on';
+      window.__tweaks.glyphsVisible = on;
+      let s = document.getElementById('glyph-style');
+      if (!s) { s = document.createElement('style'); s.id = 'glyph-style'; document.head.appendChild(s); }
+      s.textContent = on ? '' : `
+        [style*="16px 0"][style*="border-top"][style*="border-bottom"] { display: none !important; }
+      `;
+      try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { glyphsVisible: on } }, '*'); } catch(_) {}
+    };
+  });
+
+  window.addEventListener('message', (e) => {
+    if (!e.data || !e.data.type) return;
+    if (e.data.type === '__activate_edit_mode') panel.classList.add('visible');
+    if (e.data.type === '__deactivate_edit_mode') panel.classList.remove('visible');
+  });
+  try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch(_) {}
+}, 400);
+</script>
+</body>
+</html>
