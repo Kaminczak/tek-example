@@ -13,6 +13,7 @@ const TEKS = [
       overview: 'Students participate in structured and informal discussions, adapting tone and vocabulary for audience and purpose.',
       studentFriendly: 'You can join a conversation, listen to what others say, and respond in a way that fits the moment and the people you\u2019re talking with.',
       tags: ['Discourse', 'Active Listening', 'Audience'],
+      explainerVideo: { youtubeId: 'o-q_szCo0RI', label: 'Teacher Explainer', duration: '2 min' },
       glyphs: ['tabler:messages', 'tabler:ear', 'tabler:users', 'tabler:adjustments-horizontal'],
       dok: 2, bloom: 'Understand / Apply',
       verticalPrev: '110.35(1)(A) \u00b7 Grade 8', verticalNext: '110.37(1)(A) \u00b7 English II',
